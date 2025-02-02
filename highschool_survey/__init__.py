@@ -28,6 +28,10 @@ class Player(BasePlayer):
     sexe = models.StringField(
         label="Sexe à la naissance", choices=[("F", "Féminin"), ("M", "Masculin")],
         widget=widgets.RadioSelectHorizontal)
+    education = models.BooleanField(
+        label="L'un des membres de votre famille proche (parents, frères et soeurs) fait-il (a-t-il fait) des études "
+              "supérieures ?", widget=widgets.RadioSelectHorizontal
+    )
     self_eff_1 = models.IntegerField(
         label="Dans quelle mesure vos succès sont déterminés par la chance vs par vos actions : ")
     self_eff_2 = models.IntegerField(
@@ -38,7 +42,7 @@ class Player(BasePlayer):
 # PAGES
 class Questionnaire(Page):
     form_model = 'player'
-    form_fields = ['sexe', 'age', 'self_eff_1', 'self_eff_2']
+    form_fields = ['sexe', 'age', "education", 'self_eff_1', 'self_eff_2']
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
@@ -46,6 +50,7 @@ class Questionnaire(Page):
             player.participant._is_bot = True
             player.age = random.randint(18, 120)
             player.sexe = random.choice(['F', 'M'])
+            player.education = random.choice([True, False])
             player.self_eff_1 = random.randint(1, 10)
             player.self_eff_2 = random.randint(1, 10)
 
