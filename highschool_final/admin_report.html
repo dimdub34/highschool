@@ -1,0 +1,25 @@
+<p class="fw-bold">
+    Ne sont affichés dans le tableau ci-dessous que les identifiants des participants qui reçoivent un prix.
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Code</th>
+        <th>Label</th>
+        <th>Score final</th>
+        <th>Prix</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{ for p in infos_players }}
+    {{ if p.paid }}
+    <tr>
+        <td>{{ p.code }}</td>
+        <td>{{ p.label }}</td>
+        <td>{{ p.nle_score_final }}</td>
+        <td>{{ p.paid }}</td>
+    </tr>
+    {{ endif }}
+    {{ endfor }}
+    </tbody>
+</table>

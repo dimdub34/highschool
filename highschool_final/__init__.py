@@ -42,6 +42,21 @@ class Subsession(BaseSubsession):
                 if p.paid else f"Votre score final ne fait pas partie des {self.nb_paids} meilleurs."
             )
 
+def vars_for_admin_report(subsession: Subsession):
+    infos_players = []
+    players = subsession.get_players() if subsession.session.config.get("test", False) else \
+        [p for p in subsession.get_players() if not p.participant._is_bot]
+    for p in players:
+        infos_players.append(
+            dict(
+                code=p.participant.code,
+                label=p.participant.label,
+                nle_score_final=round(p.nle_score_final, 2),
+                paid=p.paid,
+            )
+        )
+    return dict(infos_players=infos_players)
+
 
 def creating_session(subsession: Subsession):
     subsession.nb_paids = min(len(subsession.get_players()) // 2, subsession.session.config['nb_paids'])
@@ -58,8 +73,8 @@ class Player(BasePlayer):
     nle_classement_effectif_code = models.IntegerField()
     nle_classement_effectif_interval = models.StringField()
     nle_diff_classement = models.IntegerField()
-    nle_score_final = models.FloatField()
-    paid = models.BooleanField()
+    nle_score_final = models.FloatField(initial=0)
+    paid = models.BooleanField(initial=False)
 
     def compute_payoff(self, others_for_comparison):
         self.participant.vars["highschool_final"] = dict()
@@ -100,25 +115,30 @@ class Player(BasePlayer):
         df_rank = pd.DataFrame({'rank': [player_rank]})
         rank_bins = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]  # 102 car rang 101 possible
         rank_labels = list(range(10, 0, -1))  # Les codes des intervalles (de 10 à 1)
-        df_rank['rank_code'] = pd.cut(df_rank['rank'], bins=rank_bins, labels=rank_labels, right=True, include_lowest=True).astype(float)
+        df_rank['rank_code'] = pd.cut(df_rank['rank'], bins=rank_bins, labels=rank_labels, right=True,
+                                      include_lowest=True).astype(float)
         df_rank['rank_name'] = pd.cut(df_rank['rank'], bins=rank_bins, right=True, include_lowest=True).astype(object)
         self.nle_classement_effectif_code = int(df_rank['rank_code'].iloc[0])
         classement_intervalle_effectif_values = next(
-            (min_val, max_val) for code, (min_val, max_val) in estimation_classement_choices if code == self.nle_classement_effectif_code)
+            (min_val, max_val) for code, (min_val, max_val) in estimation_classement_choices if
+            code == self.nle_classement_effectif_code)
         self.nle_classement_effectif_interval = f"[{classement_intervalle_effectif_values[0]} - {classement_intervalle_effectif_values[1]}]"
         self.nle_diff_classement = abs(estimation_classement_code - self.nle_classement_effectif_code)
         self.nle_score_final = max(0, self.nle_score_final - (self.nle_score_final * self.session.config[
             "penalite_erreur_estim"] * self.nle_diff_classement))
 
-        self.participant.vars["highschool_final"]["txt_estim_rel"] = (f"Vous aviez estimé un classement compris dans l'intervalle "
-                         f"{estimation_classement_interval}. "
-                         f"Votre classement effectif est dans l'intervalle "
-                         f"{self.nle_classement_effectif_interval}, soit une "
-                         f"différence de {self.nle_diff_classement} intervalle(s). "
-                         f"Votre score a donc été diminué de {self.nle_diff_classement} x "
-                         f"{int(self.session.config['penalite_erreur_estim'] * 100)} %.")
+        self.participant.vars["highschool_final"]["txt_estim_rel"] = (
+            f"Vous aviez estimé un classement compris dans l'intervalle "
+            f"{estimation_classement_interval}. "
+            f"Votre classement effectif est dans l'intervalle "
+            f"{self.nle_classement_effectif_interval}, soit une "
+            f"différence de {self.nle_diff_classement} intervalle(s). "
+            f"Votre score a donc été diminué de {self.nle_diff_classement} x "
+            f"{int(self.session.config['penalite_erreur_estim'] * 100)} %.")
 
-        self.participant.vars["highschool_final"]["txt_score_final"] = f"Votre score final est de {self.nle_score_final:.2f}."
+        self.participant.vars["highschool_final"][
+            "txt_score_final"] = f"Votre score final est de {self.nle_score_final:.2f}."
+
 
 # PAGES
 class MyPage(Page):
