@@ -29,7 +29,12 @@ class Player(BasePlayer):
 
 
 # PAGES
-class Welcome(Page):
+class MyPage(Page):
+    @staticmethod
+    def js_vars(player: Player):
+        return dict(fill_auto=player.session.config["fill_auto"])
+
+class Welcome(MyPage):
     form_model = "player"
     form_fields = ["entered_id"]
 
@@ -41,7 +46,7 @@ class Welcome(Page):
         player.participant.label = player.entered_id
 
 
-class Presentation(Page):
+class Presentation(MyPage):
     @staticmethod
     def vars_for_template(player: Player):
         return dict(nb_paids=min(len(player.subsession.get_players()) // 2, player.session.config['nb_paids']))

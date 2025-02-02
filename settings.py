@@ -9,13 +9,13 @@ LANGUAGE_CODE = 'fr'
 REAL_WORLD_CURRENCY_CODE = 'EUR'
 USE_POINTS = False
 PARTICIPANT_FIELDS = []
-SESSION_FIELDS = ["fill_auto", "language", "understanding"]
+SESSION_FIELDS = []
 
 SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1.00,
     participation_fee=0.00,
     fill_auto=False,
-    doc=""
+    test=False,
 )
 
 SESSION_CONFIGS = [
@@ -37,5 +37,4 @@ SESSION_CONFIGS = [
         test=True,
         post_conf=True
     ),
-
 ]
