@@ -1,0 +1,86 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'highschool_nle/nle.css' }}" />
+{{ endblock }}
+{{ block title }}
+{{ endblock }}
+
+{{ block content }}
+
+<div class="mb-3">
+    <p class="fw-bold fs-4">Temps restant : <span id="the_timer">{{ C.NLE_TIME }}</span></p>
+</div>
+
+<div class="card bg-light mb-3">
+    <div class="card-header">
+        <h5>Exercice <span id="exercice_number">1</span></h5>
+    </div>
+    <div class="card-body">
+        <p>
+            Le nombre cible est <span id="the_target" class="fw-bold text-info">{{ nle_values.0|to2 }}</span>.
+        </p>
+    </div>
+</div>
+
+<div class="text-center mb-3">
+    0&nbsp;<input type="range" min="0" max="100" value="0" step="0.01" name="nle_slider"
+                  oninput="updateHiddenInput(this.value)">&nbsp;100
+</div>
+
+{{ for i in nle_values }}
+<input type="hidden" name="nle_{{ forloop.counter }}" value="0">
+{{ endfor }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+    let current_exercice = 1;
+    let current_time = js_vars.NLE_TIME;
+    const exercice_number = document.querySelector("#exercice_number");
+    const the_slider = document.querySelector("input[name=nle_slider]");
+    const the_target = document.querySelector("#the_target");
+    const the_timer = document.querySelector("#the_timer");
+    let the_interval;
+
+    function startTimer() {
+        the_interval = setInterval(() => {
+            current_time -= 1;
+            if (current_time === 2 && js_vars.fill_auto) {
+                the_slider.value = Math.floor(Math.random() * 101);
+                the_slider.dispatchEvent(new Event("input"));
+            }
+            if (current_time === -1) {
+                display_next();
+            } else {
+                if (current_time <= 3)
+                    the_timer.classList.add("text-danger");
+                else
+                    the_timer.classList.remove("text-danger");
+                the_timer.innerHTML = current_time > 9 ? current_time : `0${current_time}`;
+            }
+        }, 1000);
+    }
+
+    function updateHiddenInput(value) {
+        document.querySelector(`input[name=nle_${current_exercice}]`).value = value;
+    }
+
+    function display_next() {
+        clearInterval(the_interval);
+        current_exercice += 1;
+        if (current_exercice > js_vars.NB_TARGETS) {
+            document.querySelector("form").submit();
+        } else {
+            exercice_number.innerHTML = current_exercice;
+            the_slider.value = 0;
+            the_timer.classList.remove("text-danger");
+            the_target.innerHTML = js_vars.nle_values[current_exercice - 1];
+            current_time = js_vars.NLE_TIME;
+            the_timer.innerHTML = current_time > 9 ? current_time : `0${current_time}`;
+            startTimer();
+        }
+    }
+
+    startTimer();
+</script>
+{{ endblock }}

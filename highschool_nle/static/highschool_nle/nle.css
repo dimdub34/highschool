@@ -1,0 +1,46 @@
+input[type="range"] {
+    -webkit-appearance: none; /* Supprime le style par défaut */
+    width: 80%; /* Largeur adaptable */
+    height: 10px; /* Épaisseur de la barre */
+    background: #ddd; /* Couleur de la barre */
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+/* Style du curseur sur WebKit (Chrome, Safari) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1em; /* Augmente la taille pour le tactile */
+    height: 1em;
+    background: var(--bs-primary); /* Couleur bleue */
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style du curseur sur Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 1em;
+    height: 1em;
+    background: var(--bs-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style au survol pour améliorer la visibilité */
+input[type="range"]:hover {
+    opacity: 1;
+}
+
+/* Ajout d'une animation au changement */
+input[type="range"]::-webkit-slider-runnable-track {
+    background: var(--bs-info);
+    border-radius: 5px;
+    height: 1em;
+}

@@ -1,0 +1,101 @@
+{{ block styles }}
+<style>
+    input[type=number] {
+        width: 80px;
+    }
+
+    input[type="range"] {
+        width: 50%; /* Largeur adaptable */
+    }
+</style>
+{{ endblock }}
+{{ block title }}
+Questionnaire
+{{ endblock }}
+
+{{ block content }}
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <p>
+            Merci de répondre aux questions ci-dessous. Les réponses seront traitées de manière totalement anonyme.
+        </p>
+    </div>
+</div>
+
+<div class="mb-3">
+    {{ for field in ["age", "sexe"] }}
+    <div class="form-control mb-1">
+        {{ formfield field }}
+    </div>
+    {{ endfor }}
+    <div class="form-control mb-1">
+        <label class="col-form-label" for="self_eff_1">{{ form.self_eff_1.label }}</label>
+        <div class="controls mb-2">
+            Chance &nbsp;<input type="range" min="1" max="10" step="1" value="5" name="self_eff_1" id="self_eff_1"
+                                list="ticks" oninput="cursor_has_moved(this)"> &nbsp; Action
+            <datalist id="ticks">
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+                <option value="6"></option>
+                <option value="7"></option>
+                <option value="8"></option>
+                <option value="9"></option>
+                <option value="10"></option>
+            </datalist>
+        </div>
+    </div>
+    <div class="form-control mb-1">
+        <label class="col-form-label" for="self_eff_2">{{ form.self_eff_2.label }}</label>
+        <div class="controls mb-2">
+            Tout à fait en désaccord &nbsp;<input type="range" min="1" max="10" step="1" value="5" name="self_eff_2"
+                                                  id="self_eff_2"
+                                                  list="ticks" oninput="cursor_has_moved(this)"> &nbsp; Tout à fait
+            d'accord
+        </div>
+    </div>
+</div>
+
+<div class="mb-2">
+    {{ next_button }}
+</div>
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'fill_auto.js' }}"></script>
+<script>
+    let cursor_moved = {"self_eff_1": false, "self_eff_2": false};
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn_next = document.querySelector(".otree-btn-next");
+        btn_next.addEventListener('click', (event) => {
+            let all_valid = true;
+
+            for (let curseur in cursor_moved) {
+                let input = document.getElementById(curseur);
+                input.setCustomValidity("");  // Réinitialisation
+
+                if (!cursor_moved[curseur]) {
+                    all_valid = false;
+                    input.setCustomValidity("Vous devez déplacer ce curseur, même si vous le replacez au centre ensuite.");
+                    input.reportValidity();
+                }
+            }
+            if (!all_valid) {
+                event.preventDefault(); // Bloque la soumission
+            }
+        });
+        if (js_vars.fill_auto)
+            fill_auto();
+    });
+
+    function cursor_has_moved(cursor) {
+        cursor_moved[cursor.id] = true;
+        cursor.setCustomValidity("");
+    }
+
+</script>
+{{ endblock }}

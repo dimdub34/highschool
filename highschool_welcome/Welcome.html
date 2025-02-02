@@ -1,0 +1,65 @@
+{{ block title }}
+Bienvenue
+{{ endblock }}
+
+{{ block content }}
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <img src="{{ static 'highschool_welcome/essec.webp' }}" alt="Essec logo"
+             style="width: 200px; float: right; margin-left: 10px;"/>
+        <p>
+            Merci d'avoir accepté de participer à l'expérience.
+        </p>
+        <p>
+            Les informations et décisions collectées durant cette expérience seront stockées sur un espace sécurisé et
+            ne seront accessibles qu'aux membres de l'équipe qui travaillent sur ce projet, des chercheurs de l'ESSEC,
+            du CNRS, de Montpellier Business School et de l'Université de Nice. <br/>
+            Les données seront anonymisées et ne seront traitées qu'à des fins scientifiques.
+        </p>
+    </div>
+</div>
+
+<div class="mb-3">
+    <input type="checkbox" name="consent" id="consent" class="form-check-input">
+    <label for="consent" class="form-check-label">
+        J'ai lu et j'accepte les conditions de l'expérience
+    </label>
+    {{ formfield "entered_id" }}
+</div>
+
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+    const btn_next = document.querySelector('.otree-btn-next');
+
+    function fill_auto() {
+        forminputs.entered_id.value = "bot";
+        document.querySelector("#consent").click();
+        btn_next.click();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        btn_next.disabled = true;
+        document.querySelector("input[name=consent]").addEventListener("click", (event) => {
+            btn_next.disabled = !event.target.checked;
+        });
+        btn_next.addEventListener("click", (event) => {
+            event.preventDefault();
+            forminputs.entered_id.setCustomValidity("");
+            if (forminputs.entered_id.value.length < 6) {
+                forminputs.entered_id.setCustomValidity("Votre identifiant doit comporter au moins 6 caractères.");
+                forminputs.entered_id.reportValidity();
+            } else {
+                document.querySelector("form").submit();
+            }
+        });
+        if (js_vars.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}

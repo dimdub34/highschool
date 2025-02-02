@@ -1,0 +1,42 @@
+{{ block title }}
+Fin de l'expérience
+{{ endblock }}
+
+{{ block content }}
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <p class="mb-3">
+            L'expérience est terminée, merci pour votre participation. Ci-dessous les résultats.
+        </p>
+        <div class="card bg-white mb-3">
+            <div class="card-body">
+                <p>
+                    {{ participant.vars.highschool_final.txt_score }}
+                </p>
+                <p>
+                    {{ participant.vars.highschool_final.txt_estim_abs }}
+                </p>
+                <p>
+                    {{ participant.vars.highschool_final.txt_estim_rel }}
+                </p>
+                <p>
+                    {{ participant.vars.highschool_final.txt_score_final }}
+                </p>
+                <p>
+                    {{ participant.vars.highschool_final.txt_paid }}
+                </p>
+            </div>
+        </div>
+        {{ if player.paid }}
+        <p>
+            <strong>Veuillez prendre une capture de cet écran afin de pouvoir récupérer votre cadeau.</strong> <br/>
+            Participant - Code : {{ player.participant.code }} <br/>
+            Participant - Label : {{ player.participant.label }}
+        </p>
+        {{ endif }}
+    </div>
+</div>
+
+{{ endblock }}
+

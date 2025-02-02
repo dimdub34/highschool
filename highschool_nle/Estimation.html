@@ -1,0 +1,176 @@
+{{ block content }}
+
+<div class="row mb-3">
+    <div class="text-end">
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal_content">
+            Instructions
+        </button>
+    </div>
+</div>
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <section id="explication" class="mb-4">
+            <h4>Estimation de votre performance</h4>
+            <p>
+                Avant de participer au jeu, nous vous demandons <b>d'estimer votre performance</b> de deux manières :
+            </p>
+            <ol>
+                <li><b>Votre score</b> : le score que vous pensez obtenir.</li>
+                <li><b>Votre classement</b> : votre position parmi 100 personnes, c'est-à-dire vous + 99 autres sélectionnées
+                    au hasard, qui jouent en même temps que vous.
+                </li>
+            </ol>
+            <p>
+                Vous devez faire ces estimations <b>avant</b> de connaître votre score réel. <br/>
+                À la fin de l'expérience, le programme informatique calculera votre score et comparera vos estimations à
+                votre performance réelle.
+            </p>
+        </section>
+
+        <section id="estimation" class="mb-4">
+            <h4>Impact des estimations sur votre score final</h4>
+            <p>
+                Votre score final peut être <b>modifié en fonction de la précision de vos estimations</b>. <br/>
+                <b>Si vos estimations sont exactes</b> votre score ne change pas. <br/>
+                <b>Si vos estimations sont inexactes</b> une pénalité sera appliquée.
+            </p>
+
+            <h6>Fonctionnement de la pénalité</h6>
+            <ul>
+                <li>{{ estimation_error_percent }} % de pénalité pour chaque intervalle d'écart entre
+                    votre estimation de score et votre score réel.
+                </li>
+                <li>{{ estimation_error_percent }} % de pénalité pour chaque intervalle d'écart entre votre estimation
+                    de
+                    classement et votre classement réel.
+                </li>
+            </ul>
+        </section>
+
+        <section id="exemples">
+            <h4>Exemples</h4>
+            <article id="exemple_score" class="mb-4">
+                <h5>Exemple 1 : Estimation du score</h5>
+                <p class="fw-bold text-info">Vous estimez que votre score sera dans l'intervalle [80 - 85).</p>
+                <table class="table table-sm w-75">
+                    <thead>
+                    <tr>
+                        <th>Score réel</th>
+                        <th>Ecart d'intervalle</th>
+                        <th>Pénalité appliquée</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>[80 - 85)</td>
+                        <td>0</td>
+                        <td>Aucune pénalité</td>
+                    </tr>
+                    <tr>
+                        <td>[75 - 80) ou [85 - 90)</td>
+                        <td>x 1</td>
+                        <td>- {{ estimation_error_percent }} %</td>
+                    </tr>
+                    <tr>
+                        <td>[70 - 75) ou [90 - 95)</td>
+                        <td>x 2</td>
+                        <td>
+                            <script>document.write(`- ${(2 * js_vars.estimation_error * 100).toFixed(0)} %`);</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>[65 - 70) ou [95 - 100]</td>
+                        <td>x 3</td>
+                        <td>
+                            <script>document.write(`- ${(3 * js_vars.estimation_error * 100).toFixed(0)} %`);</script>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>
+                    <u>Exemple de calcul</u> : Votre score réel est 78, donc il est dans [75 - 80). Vous avez estimé [80
+                    -
+                    85),
+                    donc
+                    il y a 1 intervalle d'écart. Votre score final = 78 - {{ estimation_error_percent }} % =
+                    <script>document.write(`${(78 * (1 - js_vars.estimation_error)).toFixed(2)}`)</script>
+                    .
+                </p>
+            </article>
+
+            <article id="exemple_classement">
+                <h5>Exemple 2 : Estimation du classement</h5>
+                <p class="fw-bold text-info">Vous estimez que vous serez classé(e) dans l'intervalle [21 - 30]</p>
+                <table class="table table-sm w-75">
+                    <thead>
+                    <tr>
+                        <th>Classement réel</th>
+                        <th>Ecart d'intervalle</th>
+                        <th>Pénalité appliquée</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>[21 - 30]</td>
+                        <td>0</td>
+                        <td>Aucune pénalité</td>
+                    </tr>
+                    <tr>
+                        <td>[11 - 20] ou [31 - 40]</td>
+                        <td>x 1</td>
+                        <td>- {{ estimation_error_percent }} %</td>
+                    </tr>
+                    <tr>
+                        <td>[1 - 10] ou [41 - 50]</td>
+                        <td>x 2</td>
+                        <td>
+                            <script>document.write(`- ${(2 * js_vars.estimation_error * 100).toFixed(0)} %`);</script>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>
+                    <u>Exemple de calcul</u> : Votre classement réel est 35, donc il est dans [31 - 40].
+                    Vous avez estimé [21 - 30], donc il y a 1 intervalle d'écart.
+                    Votre score final = score après pénalité sur l'estimation du score - {{ estimation_error_percent }} % supplémentaires.
+                    Si on poursuit avec les données de l'exemple 1, votre score final =
+                    <script>document.write(`${(78 * (1 - js_vars.estimation_error)).toFixed(2)}`)</script> -
+                    {{ estimation_error_percent }} % =
+                    <script>document.write(`${(78 * (1 - js_vars.estimation_error) * (1 - js_vars.estimation_error)).toFixed(2)}`)</script>
+                    .
+                </p>
+            </article>
+        </section>
+    </div>
+</div>
+
+<div class="form-control mb-2">
+    <p class="fw-bold">Intervalle de votre score</p>
+    {{ formfield "nle_estimation_score_code" }}
+</div>
+<div class="form-control mb-3">
+    <p class="fw-bold">Intervalle de votre classement</p>
+    {{ formfield "nle_estimation_classement_code" }}
+</div>
+
+{{ include_sibling "InstructionsModal.html" }}
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'chrono_warning.js' }}"></script>
+<script src="{{ static 'fill_auto.js' }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        start_chrono(
+            document.querySelector("#decision_time"), document.querySelector("#decision_time_end"),
+            js_vars.DECISION_TIME
+        );
+        if (js_vars.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}

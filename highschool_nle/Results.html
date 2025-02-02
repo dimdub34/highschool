@@ -1,0 +1,51 @@
+{{ block title }}
+Résultats
+{{ endblock }}
+
+{{ block content }}
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <p>
+            Ci-dessous les cibles, les positions du curseur et les distances pour les
+            {{ C.NB_TARGETS }} exercices. <br/>
+            En moyenne vous avez placé le curseur à {{ player.nle_avg_distance|to2 }} de distance de la cible,
+            <b>votre score est donc {{ player.nle_score|to2 }}</b>.
+        </p>
+    </div>
+</div>
+
+<table class="table table-sm text-center mb-3">
+    <thead>
+    <tr>
+        <th>Exercice</th>
+        <th>Cible</th>
+        <th>Position du curseur</th>
+        <th>Distance</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{ for row in targets_numbers }}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ row.0 }}</td>
+        <td>{{ row.1 }}</td>
+        <td>{{ row.2|to2 }}</td>
+    </tr>
+    {{ endfor }}
+    </tbody>
+</table>
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{static 'fill_auto.js' }}"></script>
+<script>
+    window.onload = function () {
+        if (js_vars.fill_auto)
+            fill_auto();
+    }
+</script>
+{{ endblock }}

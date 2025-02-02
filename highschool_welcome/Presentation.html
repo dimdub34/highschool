@@ -1,0 +1,30 @@
+{{ block title }}
+Présentation
+{{ endblock }}
+
+{{ block content }}
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <p>
+            Cette expérience comporte un jeu et deux questionnaires. A l'issue du jeu vous obtiendrez un score, en
+            fonction de votre performance, compris entre 0 et 100.
+            Les {{ nb_paids }} meilleurs scores recevront un prix.
+        </p>
+    </div>
+</div>
+
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'fill_auto.js' }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (js_vars.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}
