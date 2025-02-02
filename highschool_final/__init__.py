@@ -39,7 +39,7 @@ class Subsession(BaseSubsession):
             p.paid = p in paid_players
             p.participant.vars["highschool_final"]["txt_paid"] = (
                 f"Votre score final fait partie des {self.nb_paids} premiers, vous allez donc recevoir un cadeau."
-                if p.paid else f"Votre score final ne fait pas partie des {self.nb_paids} premiers."
+                if p.paid else f"Votre score final ne fait pas partie des {self.nb_paids} meilleurs."
             )
 
 
@@ -133,8 +133,8 @@ class MyPage(Page):
 
 class FinalWaitForAll(WaitPage):
     wait_for_all_groups = True
-    body_text = ("Le programme informatique attend que tous les participants aient terminé, pour déterminer les "
-                 "\"classements\".")
+    body_text = ("Le programme informatique attend que tous les participants aient terminé, pour faire les "
+                 "\"classements\" et calculer le score final de chacun.")
 
     @staticmethod
     def after_all_players_arrive(subsession: Subsession):

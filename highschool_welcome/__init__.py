@@ -44,7 +44,7 @@ class Welcome(Page):
 class Presentation(Page):
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(nb_paids=min(len(player.subsession.get_players()), player.session.config['nb_paids']))
+        return dict(nb_paids=min(len(player.subsession.get_players()) // 2, player.session.config['nb_paids']))
 
 
 page_sequence = [Welcome, Presentation]
