@@ -45,6 +45,10 @@ class Questionnaire(Page):
     form_fields = ['sexe', 'age', "education", 'self_eff_1', 'self_eff_2']
 
     @staticmethod
+    def js_vars(player: Player):
+        return dict(fill_auto=player.session.config["fill_auto"])
+
+    @staticmethod
     def before_next_page(player: Player, timeout_happened):
         if timeout_happened:
             player.participant._is_bot = True

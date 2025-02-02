@@ -38,7 +38,7 @@ class Subsession(BaseSubsession):
         for p in players:
             p.paid = p in paid_players
             p.participant.vars["highschool_final"]["txt_paid"] = (
-                f"Votre score final fait partie des {self.nb_paids} premiers, vous allez donc recevoir un cadeau."
+                f"Votre score final fait partie des {self.nb_paids} meilleurs, vous allez donc recevoir un cadeau."
                 if p.paid else f"Votre score final ne fait pas partie des {self.nb_paids} meilleurs."
             )
 

@@ -161,14 +161,9 @@
 {{ endblock }}
 
 {{ block scripts }}
-<script src="{{ static 'chrono_warning.js' }}"></script>
 <script src="{{ static 'fill_auto.js' }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        start_chrono(
-            document.querySelector("#decision_time"), document.querySelector("#decision_time_end"),
-            js_vars.DECISION_TIME
-        );
         if (js_vars.fill_auto)
             fill_auto();
     });
