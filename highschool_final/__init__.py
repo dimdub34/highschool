@@ -134,7 +134,7 @@ class MyPage(Page):
 class FinalWaitForAll(WaitPage):
     wait_for_all_groups = True
     body_text = ("Le programme informatique attend que tous les participants aient terminé, pour faire les "
-                 "\"classements\" et calculer le score final de chacun.")
+                 "classements et calculer le score final de chacun.")
 
     @staticmethod
     def after_all_players_arrive(subsession: Subsession):
