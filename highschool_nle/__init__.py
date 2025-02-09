@@ -51,20 +51,14 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     nle_estimation_score_code = models.IntegerField(
-        label="Veuillez sélectionner l'intervalle dans lequel vous pensez que votre score va se situer. <br>"
-              "L'intervalle [95 - 100] signifie que vous pensez avoir une distance moyenne inférieure à 5, "
-              "autrement dit être très précis(e). <br>"
-              "A l'inverse l'intervalle [0 - 50) signifie que vous pensez avoir distance moyenne supérieure à 50, "
-              "autrement dit ne pas être précis(e) du tout. ",
+        label="Sélectionne l'intervalle dans lequel tu penses que ton score va se situer. Le meilleur score "
+              "possible est 100 (extrêmement précis) et le moins bon possible est 0 (extrêmement imprécis).",
         choices=C.SCORE_CHOICES, doc="10 = score élevé, 1 = score faible"
     )
     nle_estimation_score_interval = models.StringField()
     nle_estimation_classement_code = models.IntegerField(
-        label="Veuillez sélectionner maintenant la position dans laquelle vous pensez que votre score va se situer en "
-              "comparaison avec 99 personnes sélectionnées au hasard parmi celles qui jouent en même temps. <br> "
-              "Par exemple, si vous pensez vous situer dans les 10 premiers vous "
-              "sélectionnez [1 - 10], si vous pensez vous situer entre la 11ème et la 20ème place vous "
-              "sélectionnez [11 - 20] etc. : ",
+        label="Sélectionne maintenant l'intervalle dans lequel tu penses que tu vas te classer, parmi 100 participants "
+              "au même jeu. [1 - 10] veut dire entre la 1ère et la 10ème place, [11- 20] entre la 11ème et la 20ème etc.",
         choices=C.CLASSEMENT_CHOICES, doc="10 = classement élevé, 1 = classement faible"
     )
     nle_estimation_classement_interval = models.StringField()

@@ -7,18 +7,20 @@ Fin de l'expérience
 <div class="card bg-light mb-3">
     <div class="card-body">
         <p class="mb-3">
-            L'expérience est terminée, merci pour votre participation. Ci-dessous les résultats.
+            L'expérience est terminée, merci pour ta participation. Ci-dessous tes résultats.
         </p>
         <div class="card bg-white mb-3">
             <div class="card-body">
+                {{ if not participant._is_bot }}
                 <p>
                     {{ participant.vars.highschool_final.txt_score }}
                 </p>
                 <p>
-                    {{ participant.vars.highschool_final.txt_estim_abs }}
+                    {{ participant.vars.highschool_final.txt_score_estimation }}
                 </p>
+
                 <p>
-                    {{ participant.vars.highschool_final.txt_estim_rel }}
+                    {{ participant.vars.highschool_final.txt_classement_estimation }}
                 </p>
                 <p>
                     {{ participant.vars.highschool_final.txt_score_final }}
@@ -26,13 +28,16 @@ Fin de l'expérience
                 <p>
                     {{ participant.vars.highschool_final.txt_paid }}
                 </p>
+                {{ else }}
+                <p>
+                    Tu étais un bot !
+                </p>
+                {{ endif }}
             </div>
         </div>
         {{ if player.paid }}
-        <p>
-            <strong>Veuillez prendre une capture de cet écran afin de pouvoir récupérer votre prix.</strong> <br/>
-            Participant - Code : {{ player.participant.code }} <br/>
-            Participant - Label : {{ player.participant.label }}
+        <p class="fs-5">Fais une capture de cet écran afin de pouvoir récupérer ton prix. <br/>
+            Participant - Code : {{ player.participant.code }}
         </p>
         {{ endif }}
     </div>

@@ -1,5 +1,8 @@
-{{ block content }}
+{{ block title }}
+Estimation de ta performance
+{{ endblock }}
 
+{{ block content }}
 <div class="row mb-3">
     <div class="text-end">
         <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal_content">
@@ -11,43 +14,43 @@
 <div class="card bg-light mb-3">
     <div class="card-body">
         <section id="explication" class="mb-4">
-            <h4>Estimation de votre performance</h4>
             <p>
-                Avant de participer au jeu, nous vous demandons <b>d'estimer votre performance</b> de deux manières :
+                Avant de participer au jeu, nous te demandons <b>d'estimer ta performance</b> de deux manières :
             </p>
             <ol>
-                <li><b>Votre score</b> : le score que vous pensez obtenir.</li>
-                <li><b>Votre classement</b> : votre position parmi 100 personnes, c'est-à-dire vous + 99 autres sélectionnées
-                    au hasard, qui jouent en même temps que vous.
+                <li><b>Ton score</b> : le score que tu penses obtenir.</li>
+                <li><b>Ton classement</b> : ta position parmi 100 personnes (toi inclus) sélectionnées
+                    au hasard qui jouent en même temps que toi.
                 </li>
             </ol>
             <p>
-                Vous devez faire ces estimations <b>avant</b> de connaître votre score réel. <br/>
-                À la fin de l'expérience, le programme informatique calculera votre score et comparera vos estimations à
-                votre performance réelle.
+                Tu dois faire ces estimations <b>avant</b> de connaître ton score réel. <br/>
+                À la fin de l'expérience, le programme informatique calculera ton score et comparera tes estimations à
+                ta performance réelle.
             </p>
         </section>
 
         <section id="estimation" class="mb-4">
-            <h4>Impact des estimations sur votre score final</h4>
             <p>
-                Votre score final peut être <b>modifié en fonction de la précision de vos estimations</b>. <br/>
-                <b>Si vos estimations sont exactes</b> votre score ne change pas. <br/>
-                <b>Si vos estimations sont inexactes</b> une pénalité sera appliquée.
-            </p>
-
-            <h6>Fonctionnement de la pénalité</h6>
+                Ton score final peut être <b>modifié en fonction de la précision de tes estimations</b>. </p>
             <ul>
-                <li>{{ estimation_error_percent }} % de pénalité pour chaque intervalle d'écart entre
-                    votre estimation de score et votre score réel.
-                </li>
-                <li>{{ estimation_error_percent }} % de pénalité pour chaque intervalle d'écart entre votre estimation
-                    de
-                    classement et votre classement réel.
+                <li><b>Si tes estimations sont exactes</b> ton score ne change pas.</li>
+                <li><b>Si tes estimations sont inexactes</b> une pénalité sera appliquée.
+                    <ul>
+                        <li>{{ estimation_error_percent }} % de pénalité pour chaque intervalle d'écart entre
+                            ton estimation de score et ton score réel.
+                        </li>
+                        <li>{{ estimation_error_percent }} % de pénalité pour chaque intervalle d'écart entre ton
+                            estimation de classement et ton classement réel.
+                        </li>
+                    </ul>
                 </li>
             </ul>
+            <p class="fw-bold fs-5">
+                Moins tu es précis dans tes estimations plus la pénalité est élevée.
+            </p>
         </section>
-
+        {#
         <section id="exemples">
             <h4>Exemples</h4>
             <article id="exemple_score" class="mb-4">
@@ -133,25 +136,33 @@
                 <p>
                     <u>Exemple de calcul</u> : Votre classement réel est 35, donc il est dans [31 - 40].
                     Vous avez estimé [21 - 30], donc il y a 1 intervalle d'écart.
-                    Votre score final = score après pénalité sur l'estimation du score - {{ estimation_error_percent }} % supplémentaires.
+                    Votre score final = score après pénalité sur l'estimation du score - {{ estimation_error_percent }}
+                    % supplémentaires.
                     Si on poursuit avec les données de l'exemple 1, votre score final =
-                    <script>document.write(`${(78 * (1 - js_vars.estimation_error)).toFixed(2)}`)</script> -
+                    <script>document.write(`${(78 * (1 - js_vars.estimation_error)).toFixed(2)}`)</script>
+                    -
                     {{ estimation_error_percent }} % =
                     <script>document.write(`${(78 * (1 - js_vars.estimation_error) * (1 - js_vars.estimation_error)).toFixed(2)}`)</script>
                     .
                 </p>
             </article>
         </section>
+        #}
     </div>
 </div>
 
-<div class="form-control mb-2">
-    <p class="fw-bold">Intervalle de votre score</p>
-    {{ formfield "nle_estimation_score_code" }}
+<div class="form-control mb-1">
+    <p><b>Intervalle de ton score</b> <br/>
+        <label class="col-form-label" for="nle_estimation_score_code">{{ form.nle_estimation_score_code.label}}</label>
+        {{ form.nle_estimation_score_code }}
+    </p>
 </div>
 <div class="form-control mb-3">
-    <p class="fw-bold">Intervalle de votre classement</p>
-    {{ formfield "nle_estimation_classement_code" }}
+    <p><b>Intervalle de ton classement</b> <br/>
+        <label class="col-form-label" for="nle_estimation_classement_code">
+            {{ form.nle_estimation_classement_code.label }}</label>
+        {{ form.nle_estimation_classement_code }}
+    </p>
 </div>
 
 {{ include_sibling "InstructionsModal.html" }}

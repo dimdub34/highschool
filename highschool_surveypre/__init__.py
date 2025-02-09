@@ -24,7 +24,7 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    age = models.IntegerField(label='Age', min=18, max=120)
+    age = models.IntegerField(label='Age', min=11, max=120)
     sexe = models.StringField(
         label="Sexe à la naissance", choices=[("F", "Féminin"), ("M", "Masculin")],
         widget=widgets.RadioSelectHorizontal)

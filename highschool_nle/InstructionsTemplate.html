@@ -1,29 +1,27 @@
 <p>
-    Dans le jeu qui va suivre, <span class="fw-bold">vous devrez indiquer la position d’un nombre sur une ligne</span>.
-    Vous devrez faire cet exercice {{ C.NB_TARGETS }} fois, avec un nombre différent à chaque fois.
+    Dans le jeu qui va suivre, <span class="fw-bold">tu devras indiquer la position d’un nombre sur une ligne</span>.
+    Tu devras faire cet exercice {{ C.NB_TARGETS }} fois, avec un nombre différent à chaque fois.
     La ligne va de 0 à 100, et le curseur est initialement positionné sur 0.
-    <span class="fw-bold">Vous disposerez de {{ C.NLE_TIME }}
-            secondes pour déplacer le curseur et vous rapprocher de la valeur cible.</span>
+    <span class="fw-bold">Tu auras {{ C.NLE_TIME }}
+            secondes pour déplacer le curseur et te rapprocher le plus possible de la valeur cible.</span>
 </p>
 <p class="text-center">
-    La figure ci-dessous montre la ligne qui sera affichée, avec le curseur positionné initialement à 0
+    La figure ci-dessous montre la ligne qui sera affichée, avec le curseur positionné initialement à 0.
 </p>
 <div class="text-center">
     0&nbsp;<input type="range" style="width: 60%;" min="0" max="100" value="0" step="0.1">&nbsp;100
 </div>
 <h6 class="mt-3 mb-3">Calcul du score</h6>
 <p>
-            <span class="fst-italic">Pour chacun des {{ C.NB_TARGETS }} exercices
-                <span class="fw-bold">le programme informatique va mesurer la distance,
-            en valeur absolue, entre la cible et la valeur sur laquelle vous aurez positionné le curseur</span>.</span>
+    <i>Pour chacun des {{ C.NB_TARGETS }} exercices <b>le programme informatique va mesurer la distance entre
+        la cible et la valeur sur laquelle tu auras positionné le curseur</b>.</i>
     <br>
-    Par exemple si la cible est 12.2 et que vous positionnez le curseur sur 11.5 la distance est de 0.7.
+    Par exemple si la cible est 12.2 et que tu positionnes le curseur sur 11.5 la distance est de 0.7.
 </p>
 <p>
     Le programme informatique va ensuite calculer la distance moyenne sur les {{ C.NB_TARGETS }} exercices. <br>
-    <span class="fw-bold">Votre score pour ce jeu sera alors égal à
-                {{ C.CONSTANTE }} - distance moyenne.</span> <br>
-    Par exemple, si votre distance moyenne est 7.89 alors votre score sera égal à
+    <b>Ton score pour ce jeu sera alors égal à {{ C.CONSTANTE }} - distance moyenne.</b> <br>
+    Par exemple, si ta distance moyenne est 7.89 alors ton score sera égal à
     {{ C.CONSTANTE }} - 7.89 =
     <script>document.write(`${(js_vars.CONSTANTE - js_vars.FACTEUR_DISTANCE * 7.89).toFixed(2)}.`)</script>
 </p>

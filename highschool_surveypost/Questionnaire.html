@@ -1,0 +1,85 @@
+{{ block styles }}
+<style>
+    input[type=number] {
+        width: 80px;
+    }
+
+    input[type="range"] {
+        width: 50%; /* Largeur adaptable */
+    }
+
+    textarea {
+        width: 50%;
+    }
+</style>
+{{ endblock }}
+
+{{ block title }}
+Questionnaire 2
+{{ endblock }}
+
+{{ block content }}
+
+<div class="form-control mb-1">
+    <label class="col-form-label" for="motivation_etudes_superieures">
+        {{ form.motivation_etudes_superieures.label }}
+    </label>
+    <div class="controls mb-2">
+        Pas du tout motivé &nbsp;<input type="range" min="1" max="5" step="1" value="3"
+                                        name="motivation_etudes_superieures" id="motivation_etudes_superieures"
+                                        list="ticks" oninput="cursor_has_moved(this)"> &nbsp; Très motivé
+        <datalist id="ticks">
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option value="4"></option>
+            <option value="5"></option>
+        </datalist>
+    </div>
+</div>
+<div class="form-control mb-3">
+    <label class="col-form-label" for="motivation_transmission">
+        {{ form.motivation_transmission.label }}
+    </label>
+    <textarea rows="5" name="motivation_transmission" id="motivation_transmission" class="form-control" required></textarea>
+</div>
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'fill_auto.js' }}"></script>
+<script>
+    let cursor_moved = {"motivation_etudes_superieures": false};
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn_next = document.querySelector(".otree-btn-next");
+        btn_next.addEventListener('click', (event) => {
+            let all_valid = true;
+
+            for (let curseur in cursor_moved) {
+                let input = document.getElementById(curseur);
+                input.setCustomValidity("");  // Réinitialisation
+
+                if (!cursor_moved[curseur]) {
+                    all_valid = false;
+                    input.setCustomValidity("Vous devez déplacer ce curseur, même si vous le replacez au centre ensuite.");
+                    input.reportValidity();
+                }
+            }
+            if (!all_valid) {
+                event.preventDefault(); // Bloque la soumission
+            }
+        });
+        if (js_vars.fill_auto)
+            fill_auto();
+    });
+
+    function cursor_has_moved(cursor) {
+        cursor_moved[cursor.id] = true;
+        cursor.setCustomValidity("");
+    }
+
+</script>
+{{ endblock }}

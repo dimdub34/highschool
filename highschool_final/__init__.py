@@ -22,30 +22,37 @@ class Subsession(BaseSubsession):
     nb_paids = models.IntegerField()
 
     def compute_payoffs(self):
-        if self.session.config.get("test", False):
+        # for tests we use bots' decisions
+        if self.session.config.get("test", False) or self.session.is_demo:
             players = self.get_players()
         else:
             players = [p for p in self.get_players() if not p.participant._is_bot]
 
-        for p in players:
-            others = [o for o in players if o != p]
+        for p in self.get_players():
+            if p.participant._is_bot:
+                others = [o for o in self.get_players() if o != p]
+            else:
+                others = [o for o in players if o != p]  # non-bots if not a test, otherwise also includes bots
             others_for_comparison = random.sample(others, min(99, len(others)))
             p.compute_payoff(others_for_comparison)
 
         # maintenant on détermine les nb_paids premiers
         sorted_scores = sorted([(p, p.nle_score_final) for p in players], key=lambda x: x[1], reverse=True)
         paid_players = [p for p, _ in sorted_scores[:self.nb_paids]]
-        for p in players:
+        for p in self.get_players():
             p.paid = p in paid_players
             p.participant.vars["highschool_final"]["txt_paid"] = (
-                f"Votre score final fait partie des {self.nb_paids} meilleurs, vous allez donc recevoir un cadeau."
-                if p.paid else f"Votre score final ne fait pas partie des {self.nb_paids} meilleurs."
+                f"Ton score final fait partie des {self.nb_paids} meilleurs, tu vas donc recevoir un prix."
+                if p.paid else f"Ton score final ne fait pas partie des {self.nb_paids} meilleurs."
             )
 
 def vars_for_admin_report(subsession: Subsession):
     infos_players = []
-    players = subsession.get_players() if subsession.session.config.get("test", False) else \
-        [p for p in subsession.get_players() if not p.participant._is_bot]
+    if subsession.session.config.get("test", False) or subsession.session.is_demo:
+        players = subsession.get_players()
+    else:
+        players = [p for p in subsession.get_players() if not p.participant._is_bot]
+
     for p in players:
         infos_players.append(
             dict(
@@ -80,7 +87,7 @@ class Player(BasePlayer):
         self.participant.vars["highschool_final"] = dict()
 
         score_effectif = float(self.participant.vars["highschool_nle"]["nle_score"])
-        self.participant.vars["highschool_final"]["txt_score"] = f"Votre score au jeu a été de {score_effectif:.2f}."
+        self.participant.vars["highschool_final"]["txt_score"] = f"Ton score au jeu a été de {score_effectif:.2f}."
 
         # différence entre intervalle de score estimé et intervalle de score réel --------------------------------------
         estimation_score_code = self.participant.vars["highschool_nle"]['nle_estimation_score_code']
@@ -96,12 +103,12 @@ class Player(BasePlayer):
         self.nle_diff_score = abs(estimation_score_code - self.nle_score_effectif_code)
         self.nle_score_final = max(0, score_effectif - (score_effectif * self.session.config["penalite_erreur_estim"] *
                                                         self.nle_diff_score))
-        self.participant.vars["highschool_final"]["txt_estim_abs"] = (
-            f"Vous aviez estimé un score compris dans l'intervalle {estimation_score_interval}. "
-            f"Votre score effectif est dans l'intervalle "
+        self.participant.vars["highschool_final"]["txt_score_estimation"] = (
+            f"Tu avais estimé un score compris dans l'intervalle {estimation_score_interval}. "
+            f"Ton score effectif est dans l'intervalle "
             f"{self.nle_score_effectif_interval}, soit une "
             f"différence de {self.nle_diff_score} intervalle(s). "
-            f"Votre score a donc été diminué de {self.nle_diff_score} x "
+            f"Ton score a donc été diminué de {self.nle_diff_score} x "
             f"{int(self.session.config['penalite_erreur_estim'] * 100)} %.")
 
         # différence entre intervalle de classement estimé et intervalle de classement réel ----------------------------
@@ -127,17 +134,17 @@ class Player(BasePlayer):
         self.nle_score_final = max(0, self.nle_score_final - (self.nle_score_final * self.session.config[
             "penalite_erreur_estim"] * self.nle_diff_classement))
 
-        self.participant.vars["highschool_final"]["txt_estim_rel"] = (
-            f"Vous aviez estimé un classement compris dans l'intervalle "
+        self.participant.vars["highschool_final"]["txt_classement_estimation"] = (
+            f"Tu avais estimé un classement compris dans l'intervalle "
             f"{estimation_classement_interval}. "
-            f"Votre classement effectif est dans l'intervalle "
+            f"Ton classement effectif est dans l'intervalle "
             f"{self.nle_classement_effectif_interval}, soit une "
             f"différence de {self.nle_diff_classement} intervalle(s). "
-            f"Votre score a donc été diminué de {self.nle_diff_classement} x "
+            f"Ton score a donc été diminué de {self.nle_diff_classement} x "
             f"{int(self.session.config['penalite_erreur_estim'] * 100)} %.")
 
         self.participant.vars["highschool_final"][
-            "txt_score_final"] = f"Votre score final est de {self.nle_score_final:.2f}."
+            "txt_score_final"] = f"Ton score final est de {self.nle_score_final:.2f}."
 
 
 # PAGES
@@ -153,8 +160,9 @@ class MyPage(Page):
 
 class FinalWaitForAll(WaitPage):
     wait_for_all_groups = True
-    body_text = ("Le programme informatique attend que tous les participants aient terminé, pour faire les "
-                 "classements et calculer le score final de chacun.")
+    title_text = "Merci de patienter ..."
+    body_text = ("Le programme informatique attend que tous les participants aient terminé pour faire "
+                 "les classements et calculer le score final de chacun.")
 
     @staticmethod
     def after_all_players_arrive(subsession: Subsession):

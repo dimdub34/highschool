@@ -1,6 +1,8 @@
 from otree.api import *
 from pathlib import Path
 
+from otree.models import subsession
+
 app_name = Path(__file__).parent.name
 
 doc = """
@@ -23,10 +25,7 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    entered_id = models.StringField(
-        label="Veuillez saisir un identifiant, ce que vous voulez, avec au minimum 6 caractères."
-    )
-
+    pass
 
 # PAGES
 class MyPage(Page):
@@ -34,16 +33,9 @@ class MyPage(Page):
     def js_vars(player: Player):
         return dict(fill_auto=player.session.config["fill_auto"])
 
-class Welcome(MyPage):
-    form_model = "player"
-    form_fields = ["entered_id"]
 
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        if timeout_happened:
-            player.participant._is_bot = True
-            player.entered_id = "bot"
-        player.participant.label = player.entered_id
+class Welcome(MyPage):
+    pass
 
 
 class Presentation(MyPage):
